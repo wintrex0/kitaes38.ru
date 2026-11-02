@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Магазин запчастей Китаец — Премиальные запчасти для грузовиков</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* ===== БАЗА ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Manrope', sans-serif; color: #111; line-height: 1.6; background: #fcfcfc; overflow-x: hidden; }
+        a { text-decoration: none; color: inherit; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 30px; }
+
+        /* ===== ШАПКА ===== */
+        header { 
+            position: absolute; top: 0; left: 0; right: 0; z-index: 100; 
+            padding: 30px 0; color: #fff;
+        }
+        .header-inner { display: flex; justify-content: space-between; align-items: center; }
+        
+        .logo { display: flex; align-items: center; gap: 12px; font-size: 28px; font-weight: 800; letter-spacing: 3px; }
+        .logo svg { width: 48px; height: 48px; fill: #d4a31a; }
+
+        .nav { display: flex; gap: 45px; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; }
+        .nav a { position: relative; padding-bottom: 5px; transition: color 0.3s; }
+        .nav a:hover { color: #d4a31a; }
+        .nav a::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; 
+            background: #d4a31a; transition: width 0.3s;
+        }
+        .nav a:hover::after { width: 100%; }
+
+        /* ===== ГЛАВНЫЙ БАННЕР ===== */
+        .hero {
+            position: relative; height: 100vh; min-height: 750px;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; color: #fff; background: #000; overflow: hidden;
+        }
+        
+        .hero-slide {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            opacity: 0; transition: opacity 1.5s ease-in-out, transform 10s linear;
+            transform: scale(1);
+        }
+        .hero-slide.active { opacity: 1; transform: scale(1.08); }
+        
+        /* Крупные фото китайских грузовиков */
+        .slide-1 { background-image: url('https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=2070&auto=format&fit=crop'); }
+        .slide-2 { background-image: url('https://images.unsplash.com/photo-1592838064575-70ed626d3a0e?q=80&w=2118&auto=format&fit=crop'); }
+        .slide-3 { background-image: url('https://images.unsplash.com/photo-1519003722824-194d4455a60c?q=80&w=2075&auto=format&fit=crop'); }
+
+        .hero::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%);
+            z-index: 1;
+        }
+        
+        .hero-content { position: relative; z-index: 2; max-width: 1000px; padding: 0 20px; }
+        .hero h1 { font-size: 84px; font-weight: 800; margin-bottom: 25px; line-height: 1.05; letter-spacing: -1px; }
+        .hero h1 span { color: #d4a31a; }
+        .hero p { font-size: 22px; margin-bottom: 50px; font-weight: 300; opacity: 0.9; max-width: 700px; margin-left: auto; margin-right: auto; }
+        
+        .btn-premium { 
+            display: inline-block; background: #d4a31a; color: #000; 
+            padding: 20px 60px; font-size: 15px; font-weight: 800; 
+            text-transform: uppercase; letter-spacing: 2px;
+            border-radius: 4px; transition: all 0.4s;
+            box-shadow: 0 10px 30px rgba(212, 163, 26, 0.3);
+        }
+        .btn-premium:hover { background: #fff; transform: translateY(-5px); box-shadow: 0 15px 40px rgba(255, 255, 255, 0.2); }
+
+        /* ===== СЕКЦИЯ КАТЕГОРИЙ ===== */
+        .categories { padding: 120px 0; background: #fff; }
+        .section-title { font-size: 48px; font-weight: 800; margin-bottom: 20px; line-height: 1.1; text-align: center; }
+        .section-title span { color: #d4a31a; }
+        .section-subtitle { text-align: center; color: #666; margin-bottom: 70px; font-size: 18px; font-weight: 400; max-width: 600px; margin-left: auto; margin-right: auto; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+        
+        .category-card {
+            position: relative;
+            height: 280px;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+            background: #000;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        
+        .category-card:hover { transform: translateY(-10px); box-shadow: 0 25px 50px rgba(0,0,0,0.15); }
+
+        .category-card .bg-img {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            opacity: 0.6; transition: opacity 0.4s, transform 0.6s ease;
+        }
+        
+        .category-card:hover .bg-img { opacity: 0.85; transform: scale(1.1); }
+        
+        .category-card .overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.2) 100%);
+            z-index: 1;
+        }
+
+        .category-content {
+            position: absolute; bottom: 0; left: 0; right: 0; padding: 30px;
+            z-index: 2;
+            display: flex; align-items: center; gap: 20px;
+        }
+
+        /* Премиум SVG иконки */
+        .category-icon {
+            width: 50px; height: 50px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .category-card:hover .category-icon { background: #d4a31a; border-color: #d4a31a; }
+        .category-icon svg { width: 26px; height: 26px; fill: #fff; transition: fill 0.3s; }
+        .category-card:hover .category-icon svg { fill: #000; }
+
+        .category-text h3 { color: #fff; font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
+        .category-text p { color: #ccc; font-size: 13px; font-weight: 400; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* ===== О НАС ===== */
+        .about { padding: 140px 0; background-color: #f8f9fa; position: relative; }
+        .about-inner { display: flex; align-items: center; gap: 80px; }
+        .about-text { flex: 1.1; }
+        .about-text h2 { font-size: 48px; font-weight: 800; margin-bottom: 30px; line-height: 1.1; }
+        .about-text h2 span { color: #d4a31a; }
+        .about-text p { font-size: 17px; color: #555; line-height: 1.9; margin-bottom: 25px; }
+        
+        .about-img { flex: 1; position: relative; border-radius: 16px; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.15); }
+        .about-img img { width: 100%; display: block; transition: transform 0.6s ease; }
+        .about-img:hover img { transform: scale(1.03); }
+
+        /* ===== КОНТАКТЫ ===== */
+        .contacts { background: #0a0a0a; color: #fff; padding: 120px 0; text-align: center; border-top: 1px solid #222; }
+        .contacts h2 { font-size: 48px; font-weight: 800; margin-bottom: 60px; }
+        .contact-phone { display: block; font-size: 42px; font-weight: 800; color: #fff; margin-bottom: 15px; transition: color 0.3s; }
+        .contact-phone:hover { color: #d4a31a; }
+        .contact-email { display: inline-block; font-size: 36px; font-weight: 800; color: #d4a31a; margin-top: 30px; margin-bottom: 50px; transition: opacity 0.3s; }
+        .contact-email:hover { opacity: 0.8; }
+        .contact-address { font-size: 18px; color: #888; margin-bottom: 50px; font-weight: 300; }
+        
+        .social-links { display: flex; justify-content: center; gap: 25px; }
+        .social-btn {
+            width: 70px; height: 70px; border-radius: 50%;
+            background: #1a1a1a; border: 1px solid #333;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s;
+        }
+        .social-btn:hover { background: #d4a31a; border-color: #d4a31a; transform: translateY(-5px); }
+        .social-btn svg { width: 32px; height: 32px; fill: #fff; transition: fill 0.3s; }
+        .social-btn:hover svg { fill: #000; }
+
+        /* ===== ПОДВАЛ ===== */
+        footer { background: #000; color: #555; padding: 40px 0; text-align: center; font-size: 14px; }
+
+        /* ===== АДАПТИВ ===== */
+        @media (max-width: 1024px) {
+            .hero h1 { font-size: 56px; }
+            .about-inner { flex-direction: column; }
+        }
+        @media (max-width: 768px) {
+            .nav { display: none; }
+            .hero h1 { font-size: 42px; }
+            .hero p { font-size: 18px; }
+            .section-title { font-size: 32px; }
+            .contact-phone { font-size: 28px; }
+            .contact-email { font-size: 24px; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ШАПКА -->
+    <header>
+        <div class="container header-inner">
+            <div class="logo">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9v1H3v2h2v1c0 3.87 3.13 7 7 7s7-3.13 7-7v-1h2V9h-2V9c0-3.87-3.13-7-7-7zm0 2c2.76 0 5 2.24 5 5v1H7V9c0-2.76 2.24-5 5-5zm-3 7h6v1c0 1.66-1.34 3-3 3s-3-1.34-3-3v-1z"/></svg>
+                КИТАЕЦ
+            </div>
+            <nav class="nav">
+                <a href="#">Главная</a>
+                <a href="#catalog">Каталог</a>
+                <a href="#about">О компании</a>
+                <a href="#contacts">Контакты</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- БАННЕР -->
+    <section class="hero">
+        <div class="hero-slide slide-1 active"></div>
+        <div class="hero-slide slide-2"></div>
+        <div class="hero-slide slide-3"></div>
+
+        <div class="hero-content">
+            <h1>Запчасти для<br><span>китайских грузовиков</span></h1>
+            <p>Оригинальные узлы и агрегаты для Sitrak, Shacman, Howo и Faw. Прямые поставки со склада в Иркутске.</p>
+            <a href="#catalog" class="btn-premium">Смотреть каталог</a>
+        </div>
+    </section>
+
+    <!-- КАТЕГОРИИ (КРАСИВЫЕ КАРТОЧКИ) -->
+    <section class="categories" id="catalog">
+        <div class="container">
+            <h2 class="section-title">Выберите <span>категорию</span></h2>
+            <p class="section-subtitle">Мы поставляем только проверенные оригинальные детали для вашего грузовика</p>
+            
+            <div class="grid">
+                <!-- Двигатель (фото мотора) -->
+                <div class="category-card">
+                    <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1620503374956-c942862f0372?q=80&w=1000&auto=format&fit=crop');"></div>
+                    <div class="overlay"></div>
+                    <div class="category-content">
+                        <div class="category-icon">
+                            <svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
+                        </div>
+                        <div class="category-text">
+                            <p>Оригинал</p>
+                            <h3>Двигатель</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- КПП (фото шестеренок) -->
+                <div class="category-card">
+                    <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=1000&auto=format&fit=crop');"></div>
+                    <div class="overlay"></div>
+                    <div class="category-content">
+                        <div class="category-icon">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z"/></svg>
+                        </div>
+                        <div class="category-text">
+                            <p>Трансмиссия</p>
+                            <h3>Коробка передач</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Редуктор (фото моста) -->
+                <div class="category-card">
+                    <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1507136566006-cfc505b114fc?q=80&w=1000&auto=format&fit=crop');"></div>
+                    <div class="overlay"></div>
+                    <div class="category-content">
+                        <div class="category-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/></svg>
+                        </div>
+                        <div class="category-text">
+                            <p>Ходовая</p>
+                            <h3>Редуктор</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Подвеска (фото пружин) -->
+                <div class="category-card">
+                    <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?q=80&w=1000&auto=format&fit=crop');"></div>
+                    <div class="overlay"></div>
+                    <div class="category-content">
+                        <div class="category-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                        </div>
+                        <div class="category-text">
+                            <p>Комфорт</p>
+                            <h3>Детали подвески</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тормоза (фото диска) -->
+                <div class="category-card">
+                    <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=1000&auto=format&fit=crop');"></div>
+                    <div class="overlay"></div>
+                    <div class="category-content">
+                        <div class="category-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                        </div>
+                        <div class="category-text">
+                            <p>Безопасность</p>
+                            <h3>Тормозная система</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Электрика (фото проводов) -->
+                <div class="category-card">
+                    <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=1000&auto=format&fit=crop');"></div>
+                    <div class="overlay"></div>
+                    <div class="category-content">
+                        <div class="category-icon">
+                            <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+                        </div>
+                        <div class="category-text">
+                            <p>Питание</p>
+                            <h3>Электрика</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- О НАС -->
+    <section class="about" id="about">
+        <div class="container about-inner">
+            <div class="about-text">
+                <h2>Надежность в каждой <span>детали</span></h2>
+                <p>Компания ООО «Направление» предлагает Вам рассмотреть возможность сотрудничества в области поставок запчастей. Одним из главных направлений является поставка запасных частей к автомобилям SHAANXI, FAW, SITRAK и HOWO.</p>
+                <p>Мы имеем возможность поставлять запчасти как крупными, так и мелкими партиями в любой регион России по Вашим запросам. На нашем складе всегда в наличии узлы и агрегаты для ремонта грузовых автомобилей.</p>
+            </div>
+            <div class="about-img">
+                <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=1000&auto=format&fit=crop" alt="Ремонт китайского грузовика">
+            </div>
+        </div>
+    </section>
+
+    <!-- КОНТАКТЫ -->
+    <section class="contacts" id="contacts">
+        <div class="container">
+            <h2>Наши контакты</h2>
+            
+            <a href="tel:+79149373957" class="contact-phone">+7 914 937 39 57</a>
+            <a href="tel:+79086698659" class="contact-phone">+7 908 669 86 59</a>
+            <a href="tel:+79526326120" class="contact-phone">+7 952 632 61 20</a>
+            
+            <a href="mailto:avtodetal38@gmail.com" class="contact-email">avtodetal38@gmail.com</a>
+            
+            <p class="contact-address">г. Иркутск, ул. Московская 1-ая, 1а, стр. 1, 1 этаж</p>
+            
+            <div class="social-links">
+                <!-- Telegram SVG -->
+                <a href="https://t.me/" class="social-btn" target="_blank" title="Telegram">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.11.02-1.93 1.23-5.46 3.62-.51.35-.98.52-1.4.51-.46-.01-1.35-.26-2.01-.48-.81-.27-1.44-.42-1.39-.89.03-.24.36-.49 1-.75 3.91-1.7 6.52-2.82 7.83-3.36 3.73-1.56 4.5-1.83 5-1.83.11 0 .36.03.52.15.13.1.17.24.18.34.01.11.01.22 0 .33z"/></svg>
+                </a>
+                <!-- WhatsApp SVG -->
+                <a href="https://wa.me/" class="social-btn" target="_blank" title="WhatsApp">
+                    <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.264 8.264 0 01-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42a8.183 8.183 0 012.41 5.83c.02 4.54-3.68 8.23-8.22 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18s-.22-.16-.47-.28z"/></svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ПОДВАЛ -->
+    <footer>
+        <p>&copy; 2026 Магазин запчастей Китаец. Все права защищены.</p>
+    </footer>
+
+    <script>
+        // Слайдер фонов в баннере
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.hero-slide');
+        
+        setInterval(() => {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }, 5000);
+    </script>
+</body>
+</html>
